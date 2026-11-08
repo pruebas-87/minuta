@@ -13,6 +13,8 @@ const ID_PATTERN = /^[a-zA-Z0-9-]{8,64}$/;
  * en `data/meetings/`. El modo se elige por la presencia del token de Blob.
  */
 const BLOB_ENABLED = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+// El tipo de acceso debe coincidir con la configuración del store (privado).
+const BLOB_ACCESS = "private" as const;
 
 export type MeetingRecord = {
   id: string;
@@ -69,18 +71,18 @@ async function ensureDir() {
 }
 
 async function putBlob(pathname: string, body: string | Buffer) {
-  await put(pathname, body, { access: "public", addRandomSuffix: false });
+  await put(pathname, body, { access: BLOB_ACCESS, addRandomSuffix: false });
 }
 
 async function getBlobText(pathname: string): Promise<string | null> {
-  const result = await get(pathname, { access: "public" });
+  const result = await get(pathname, { access: BLOB_ACCESS });
   if (!result || result.statusCode !== 200 || !result.stream) return null;
   const response = new Response(result.stream as unknown as BodyInit);
   return await response.text();
 }
 
 async function getBlobBytes(pathname: string): Promise<Uint8Array | null> {
-  const result = await get(pathname, { access: "public" });
+  const result = await get(pathname, { access: BLOB_ACCESS });
   if (!result || result.statusCode !== 200 || !result.stream) return null;
   const response = new Response(result.stream as unknown as BodyInit);
   return new Uint8Array(await response.arrayBuffer());
