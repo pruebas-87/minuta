@@ -7,6 +7,12 @@ const nextConfig: NextConfig = {
   // These packages ship their own runtime assets / native-ish bindings and must
   // stay outside the Turbopack server bundle.
   serverExternalPackages: ["puppeteer-core", "@sparticuz/chromium", "mammoth", "unpdf", "pdf-lib"],
+  // El Chromium serverless lee sus propios binarios (.br) en runtime; el trazador
+  // no los detecta, así que se incluyen explícitamente para las rutas que lo usan.
+  outputFileTracingIncludes: {
+    "api/meetings/route.ts": ["node_modules/@sparticuz/chromium/**"],
+    "api/meetings/[id]/pdf/route.ts": ["node_modules/@sparticuz/chromium/**"],
+  },
   turbopack: {
     rules: {
       "*.css": {
