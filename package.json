@@ -12,6 +12,8 @@
     "preview:png": "tsx scripts/render-preview.ts"
   },
   "dependencies": {
+    "@sparticuz/chromium": "^153.0.0",
+    "@vercel/blob": "^2.8.2",
     "clsx": "^2.1.1",
     "lucide-react": "^1.66.0",
     "mammoth": "^1.13.0",

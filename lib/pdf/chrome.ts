@@ -2,6 +2,15 @@ import { existsSync } from "node:fs";
 import type { Browser } from "puppeteer-core";
 import { PDFDocument } from "pdf-lib";
 
+/**
+ * En Vercel no hay Chrome del sistema ni filesystem persistente:
+ * usamos @sparticuz/chromium (binario headless para serverless).
+ * El paquete descomprime su binario y sus fuentes (Open Sans) a /tmp y
+ * define FONTCONFIG_PATH automáticamente, así que no hace falta extra.
+ * Detectamos el entorno por la variable VERCEL que la plataforma define.
+ */
+const IS_SERVERLESS = process.env.VERCEL === "1";
+
 const CANDIDATES = [
   process.env.CHROME_PATH,
   "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
@@ -50,6 +59,27 @@ async function getBrowser(): Promise<Browser> {
       // relanzar abajo
     }
     browserPromise = null;
+  }
+
+  if (IS_SERVERLESS) {
+    browserPromise = (async () => {
+      const [{ default: puppeteer }, chromiumModule] = await Promise.all([
+        import("puppeteer-core"),
+        import("@sparticuz/chromium"),
+      ]);
+      const engine = chromiumModule.default;
+      engine.setGraphicsMode = false; // Menos memoria y extracción más rápida (sobra swiftshader)
+      const browser = await puppeteer.launch({
+        args: [...engine.args, "--font-render-hinting=none"],
+        executablePath: await engine.executablePath(),
+        headless: true,
+      });
+      browser.on("disconnected", () => {
+        browserPromise = null;
+      });
+      return browser;
+    })();
+    return browserPromise;
   }
 
   const executablePath = findChrome();

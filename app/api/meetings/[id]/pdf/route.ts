@@ -1,5 +1,4 @@
-import { readFile } from "node:fs/promises";
-import { meetingPdfPath, readMeeting, savePdf } from "@/lib/store";
+import { readMeeting, readPdf, savePdf } from "@/lib/store";
 import { pdfFileName, renderRecordPdf } from "@/lib/pdf/document";
 
 export const runtime = "nodejs";
@@ -21,9 +20,10 @@ export async function GET(request: Request, context: Context) {
   }
 
   let bytes: Uint8Array;
-  try {
-    bytes = new Uint8Array(await readFile(meetingPdfPath(id)));
-  } catch {
+  const cached = await readPdf(id);
+  if (cached) {
+    bytes = cached;
+  } else {
     // El PDF se borró o nunca se escribió: se regenera desde el JSON guardado.
     bytes = await renderRecordPdf(record);
     await savePdf(id, bytes);
