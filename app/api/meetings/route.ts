@@ -6,7 +6,7 @@ import { OllamaError } from "@/lib/ollama";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 900;
+export const maxDuration = 300; // Límite del plan Hobby de Vercel (máx. 300s)
 
 const BodySchema = z.object({
   notes: z.string().trim().min(40, "Las notas son demasiado cortas.").max(200_000, "Las notas son demasiado largas."),
