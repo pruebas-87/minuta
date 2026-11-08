@@ -1,5 +1,5 @@
 import { health } from "@/lib/ollama";
-import { findChrome } from "@/lib/pdf/chrome";
+import { checkChromeReady } from "@/lib/pdf/chrome";
 
 export const dynamic = "force-dynamic";
 
@@ -8,7 +8,7 @@ export async function GET() {
 
   let chrome: { ok: boolean; error?: string; hint?: string } = { ok: true };
   try {
-    findChrome();
+    await checkChromeReady();
   } catch (error) {
     chrome = {
       ok: false,

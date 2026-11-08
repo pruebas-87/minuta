@@ -50,6 +50,16 @@ export function findChrome(): string {
   return found;
 }
 
+/**
+ * Valida que se pueda generar PDF en el entorno actual.
+ * En serverless no hay Chrome del sistema: el binario de @sparticuz/chromium
+ * se infla al primer uso, así que no se valida aquí (encarecería /api/health).
+ */
+export async function checkChromeReady(): Promise<void> {
+  if (IS_SERVERLESS) return;
+  findChrome();
+}
+
 async function getBrowser(): Promise<Browser> {
   if (browserPromise) {
     try {
