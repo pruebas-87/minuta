@@ -1,0 +1,60 @@
+# ===== Archivos de secretos / entorno =====
+.env
+.env.*
+*.pem
+*.key
+
+# ===== Node.js =====
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json.bak
+.npm/
+.yarn/cache/
+.vite/
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ===== Salidas de compilación =====
+dist/
+build/
+out/
+target/
+*.exe
+*.dll
+
+# ===== Cobertura / tests =====
+coverage/
+.coverage
+htmlcov/
+
+# ===== Windows =====
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ===== Editores / IDEs =====
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*.bak
+*~
+
+# ===== Varios =====
+.DS_Store
+tmp/
+temp/
+*.log
